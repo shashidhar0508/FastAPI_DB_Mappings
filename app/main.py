@@ -28,4 +28,6 @@ def indexes():
 def create_person(
         person: schemas.PersonCreate, db: Session = Depends(get_db)
 ):
-    return crud.create_person(db=db, person=person)
+    crud.create_person(db=db, person=person)
+    # return crud.create_person(db=db, person=person)
+    return {"id":"sdf"}
