@@ -1,0 +1,11 @@
+1. first created new project
+2. created app directory
+3. added all python files such as crud, database, main, models, schemas in app directory
+4. added info txt files in app directory
+5. pip installed following dependencies using below command
+    pip install fastapi uvicorn sqlalchemy databases[postgresql] psycopg2 pydantic
+6. Generated requirements.txt file using below command
+    pip freeze>requirements.txt
+7. Added classes and their dependencies in models file
+8. Added c
+9. uvicorn main:app --reload
