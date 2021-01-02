@@ -1,9 +1,10 @@
-from fastapi import FastAPI
-import crud, models, schemas
-from database import SessionLocal, engine
-
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI
 from sqlalchemy.orm import Session
+
+import crud
+import models
+import schemas
+from database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -29,8 +30,8 @@ def create_person_stocks(person: schemas.PersonCreate, db: Session = Depends(get
     return crud.create_person_stocks_db(db=db, person=person)
 
 
-@app.get("/stocks/person_account/{name}/{email}")
-def person_account(name=str, email=str, db: Session = Depends(get_db)):
+@app.get("/stocks/person_account/{name}/{limit}")
+def person_account(name=str, limit=int, db: Session = Depends(get_db)):
     # def person_account(stock_input: schemas.StockInput, db: Session = Depends(get_db)):
     # return crud.person_account_db(db=db, stockInput=stock_input)
-    return crud.person_account_db(name, email, db=db)
+    return crud.person_account_db(name, limit, db=db)

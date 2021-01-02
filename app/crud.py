@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 import models
 import schemas
 from datetime import datetime
@@ -31,27 +32,21 @@ def create_person_stocks_db(db: Session, person: schemas.PersonCreate):
     return {"status": "success"}
 
 
-def person_account_db(name, email, db: Session):
-    print("name : ", name, " email : ", email)
-    person_data = db.query(models.Person).filter(models.Person.name == name,
-                                                 models.Person.email == email).first()
-    print("person_data : ", person_data)
-    person_id = person_data.id
-    print("person_id : ", person_id)
-    stock_list = db.query(models.Stock).filter(models.Stock.person_id == person_id).all()
-    print("stock_list : ", stock_list)
-    for stock in stock_list:
-        print("stock : ", stock)
-    person_stocks = PersonStocks()
-    person_stocks.person.name = person_data.name
-    person_stocks.person.email = person_data.email
-    person_stocks.stocks_list = stock_list
-
-    return stock_list
-
-# def person_account_db(db: Session, stock_input: schemas.StockInput):
-#     print("name : ", stock_input.name, " email : ", stock_input.email)
-#     person_data = db.query(models.Person).filter(models.Person.name == stock_input.name,
-#                                                  models.Person.email == stock_input.email).first()
-#     print("person_data : ",person_data)
-#     return person_data
+def person_account_db(name, count, db: Session):
+    person_data_list = db.query(models.Person).filter(models.Person.updated_by == name).order_by(func.random()) \
+        .limit(count).all()
+    print("person_data_list : ", person_data_list)
+    person_stock_list = []
+    for person_data in person_data_list:
+        person1 = {'name': person_data.name, 'email': person_data.email}
+        person_id = person_data.id
+        stock_list = db.query(models.Stock).filter(models.Stock.person_id == person_id).all()
+        stock_lists1 = []
+        for stock in stock_list:
+            each_stock = {'stock_name': stock.stock_name, 'buy_price': stock.buy_price, 'sell_price': stock.sell_price,
+                          'charges': stock.charges}
+            stock_lists1.append(each_stock)
+        print("stock_lists1 : ", stock_lists1)
+        person_stocks = PersonStocks(person=person1, stocks_list=stock_lists1)
+        person_stock_list.append(person_stocks)
+    return person_stock_list
